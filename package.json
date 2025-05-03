@@ -1,0 +1,11 @@
+{
+  "name": "file-sharing-platform",
+  "version": "1.0.0",
+  "description": "A file sharing project based on Node Express and MongoDB",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Souban Khandwani",
+  "license": "ISC"
+}
