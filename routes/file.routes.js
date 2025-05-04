@@ -4,7 +4,8 @@ const path = require('path');
 const { v4: uuid4 } = require('uuid');
 
 const File = require('../models/file.model');
-
+const sendmail = require('../services/email.service');
+const emailTemplate = require('../services/email.template');
 const router = express.Router();
 
 // Multer configuration
@@ -61,6 +62,43 @@ router.post('/', (req, res) => {
       file: `${process.env.APP_BASE_URL}/files/${response.uuid}`,
     });
   });
+});
+
+router.post('/send', async (req, res) => {
+  const { uuid, emailTo, emailFrom } = req.body;
+
+  if (!uuid || !emailFrom || !emailTo) {
+    return res.status(400).json({ error: 'All fields are mandatory.' });
+  }
+
+  const file = await File.findOne({ uuid });
+
+  if (!file) {
+    return res.status(404).json({ error: 'File link expired.' });
+  }
+
+  if (file.sender) {
+    return res.status(403).json({ error: 'Email link already sent.' });
+  }
+
+  file.sender = emailFrom;
+  file.receiver = emailTo;
+
+  const result = await file.save();
+
+  sendmail({
+    from: emailFrom,
+    to: emailTo,
+    subject: 'You have been shared a file',
+    html: emailTemplate({
+      emailFrom: emailFrom,
+      downloadLink: `${process.env.APP_BASE_URL}/files/${file.uuid}`,
+      size: parseInt(file.size / 1000) + ' KB',
+      expires: '24 hours',
+    }),
+  });
+
+  return res.status(200).json({ success: true });
 });
 
 module.exports = router;
