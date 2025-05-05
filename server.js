@@ -21,4 +21,8 @@ app.use('/api/files', fileRoutes);
 app.use('/files', showRoutes);
 app.use('/files/download', downloadRoutes);
 
+app.get('/', (req, res) => {
+  res.render('index');
+});
+
 app.listen(PORT, () => console.log(`Server listening at port: ${PORT}`));
