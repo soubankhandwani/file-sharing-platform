@@ -11,14 +11,12 @@ async function sendmail({ from, to, subject, html }) {
     },
   });
 
-  let info = await transporter.sendMail({
+  await transporter.sendMail({
     from,
     to,
     subject,
     html,
   });
-
-  console.log('NODEMAILER: ', info);
 }
 
 module.exports = sendmail;
