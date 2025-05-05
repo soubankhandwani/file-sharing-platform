@@ -27,14 +27,6 @@ const upload = multer({
 }).single('myfile');
 
 router.post('/', (req, res) => {
-  /*
-    TODOS
-    Validate Request
-    Store file in uploads folder
-    Store in database
-    Response -> Link
-  */
-
   // Store files in uploads folder
   upload(req, res, async (err) => {
     // Validate Request
